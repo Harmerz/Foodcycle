@@ -49,7 +49,7 @@ class _SellWelcomeScreenState extends State<SellWelcomeScreen> {
               );
             },
             child: new Container(
-              margin: EdgeInsets.fromLTRB(0, 150, 0, 0),
+              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
               width: 240,
               height: 43,
               decoration: BoxDecoration(

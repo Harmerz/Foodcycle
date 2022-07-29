@@ -1,7 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:foodcycle/Page/Mealify/clasify.dart';
 import 'package:foodcycle/gen/colors.gen.dart';
 import 'package:foodcycle/gen/fonts.gen.dart';
 import 'package:foodcycle/hackbiz_icons.dart';
+import 'package:image_picker/image_picker.dart';
 import "../../gen/assets.gen.dart";
 import 'package:dotted_border/dotted_border.dart';
 
@@ -13,6 +21,52 @@ class ClasifyScreenTwo extends StatefulWidget {
 }
 
 class _ClasifyScreenTwoState extends State<ClasifyScreenTwo> {
+  File? _image;
+  List<int>? imageBytes;
+  String? namefile;
+  File? imageInfo;
+  var dataJson;
+// FilePickerResult? result = await FilePicker.platform.pickFiles();
+  Future getImage() async {
+    try {
+      final image = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'JPG', 'PNG', 'HEIC'],
+      );
+      if (image == null) return;
+
+      final File imageTemp = File(image.files.first.path.toString());
+      print(imageTemp);
+      setState(() {
+        this._image = imageTemp;
+        this.namefile = image.files.first.name.toString();
+      });
+      print(image);
+      imageBytes = await imageTemp.readAsBytes();
+      String base64Image = base64Encode(imageBytes!);
+      print(base64Image);
+      dataJson = {
+        "image": base64Image,
+      };
+    } on PlatformException catch (e) {
+      print("failed because " + e.toString());
+    }
+  }
+
+  var url = "http://10.0.2.2:3000/predict-meal";
+  Future<String> postRequest() async {
+    HttpClient httpClient = new HttpClient();
+    HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
+    request.headers.set('content-type', 'application/json');
+    request.add(utf8.encode(json.encode(dataJson)));
+    HttpClientResponse response = await request.close();
+    // todo - you should check the response.statusCode
+    String reply = await response.transform(utf8.decoder).join();
+    httpClient.close();
+    return reply;
+  }
+
+  var resultPost;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,27 +174,34 @@ class _ClasifyScreenTwoState extends State<ClasifyScreenTwo> {
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(top: 15),
-              child: DottedBorder(
-                dashPattern: [10, 5],
-                borderType: BorderType.RRect,
-                radius: Radius.circular(12),
-                padding: EdgeInsets.all(4),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  child: Container(
-                    height: 91,
-                    width: double.infinity,
-                    color: ColorName.canvasPrimary,
-                    child: Center(
-                      child: Text(
-                        "Select files from your device",
-                        style: TextStyle(
-                          fontFamily: FontFamily.urbanist,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: ColorName.greyPrimary,
+            new GestureDetector(
+              onTap: () {
+                getImage();
+              },
+              child: Container(
+                margin: EdgeInsets.only(top: 15),
+                child: DottedBorder(
+                  dashPattern: [10, 5],
+                  borderType: BorderType.RRect,
+                  radius: Radius.circular(12),
+                  padding: EdgeInsets.all(4),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    child: Container(
+                      height: 91,
+                      width: double.infinity,
+                      color: ColorName.canvasPrimary,
+                      child: Center(
+                        child: Text(
+                          namefile != null
+                              ? namefile.toString()
+                              : "Select files from your device",
+                          style: TextStyle(
+                            fontFamily: FontFamily.urbanist,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            color: ColorName.greyPrimary,
+                          ),
                         ),
                       ),
                     ),
@@ -150,12 +211,14 @@ class _ClasifyScreenTwoState extends State<ClasifyScreenTwo> {
             ),
             Center(
               child: new GestureDetector(
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const ()),
-                  // );
+                onTap: () async {
+                  resultPost = await postRequest();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SecondsScreenWithData(_image!, resultPost!)),
+                  );
                 },
                 child: new Container(
                   margin: EdgeInsets.fromLTRB(0, 40, 0, 0),

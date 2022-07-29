@@ -15,6 +15,18 @@ class $AssetsImagesGen {
   /// File path: assets/images/Profile.png
   AssetGenImage get profile => const AssetGenImage('assets/images/Profile.png');
 
+  /// File path: assets/images/Screen1.png
+  AssetGenImage get screen1 => const AssetGenImage('assets/images/Screen1.png');
+
+  /// File path: assets/images/Screen2.png
+  AssetGenImage get screen2 => const AssetGenImage('assets/images/Screen2.png');
+
+  /// File path: assets/images/Screen3.png
+  AssetGenImage get screen3 => const AssetGenImage('assets/images/Screen3.png');
+
+  /// File path: assets/images/Screen4.png
+  AssetGenImage get screen4 => const AssetGenImage('assets/images/Screen4.png');
+
   /// File path: assets/images/SellWelcomeScreen.png
   AssetGenImage get sellWelcomeScreen =>
       const AssetGenImage('assets/images/SellWelcomeScreen.png');
@@ -40,6 +52,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/eatable.png
   AssetGenImage get eatable => const AssetGenImage('assets/images/eatable.png');
+
+  /// File path: assets/images/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
   /// File path: assets/images/uneatable.png
   AssetGenImage get uneatable =>
