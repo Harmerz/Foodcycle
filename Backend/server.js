@@ -38,17 +38,15 @@ app.post('/predict-meal', (req, res) => {
       const prediction = await model.predict(tensorImage);
       const result = prediction;
       let list_prob = result.dataSync().toString().split(',');
-      let res_obj = [{
-        'class_name': "Eatable",
-        'probability': list_prob[0]
-      },
-      {
-        'class_name': "Uneatable",
-        'probability': list_prob[1]
-      }]
-      res.send(res_obj);
-
-      return result
+      
+      if(Number.parseFloat(list_prob[0]) > Number.parseFloat(list_prob[1])){
+        res.send('Eatable');
+        return;
+      }
+      else{
+        res.send('Uneatable');
+        return;
+      }
     })()
   }
   catch (err) {
