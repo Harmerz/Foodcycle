@@ -11,6 +11,8 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:foodcycle/Page/Mealify/ClasifyScreen2.dart';
 import 'package:foodcycle/Page/Mealify/SellWelcomeScreen.dart';
 import 'package:foodcycle/Welcome/WelcomePertama.dart';
 import 'package:foodcycle/gen/colors.gen.dart';
@@ -20,6 +22,8 @@ import 'package:web_socket_channel/io.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const MyApp());
 }
 
@@ -28,6 +32,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FlutterNativeSplash.remove();
     return const MaterialApp(
       home: Scaffold(
         body: WelcomePertama(),

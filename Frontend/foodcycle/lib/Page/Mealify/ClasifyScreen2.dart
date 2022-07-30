@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -6,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:foodcycle/Page/Mealify/clasify.dart';
+import 'package:foodcycle/Page/Mealify/clasifyerror.dart';
 import 'package:foodcycle/gen/colors.gen.dart';
 import 'package:foodcycle/gen/fonts.gen.dart';
 import 'package:foodcycle/hackbiz_icons.dart';
@@ -36,12 +38,11 @@ class _ClasifyScreenTwoState extends State<ClasifyScreenTwo> {
       if (image == null) return;
 
       final File imageTemp = File(image.files.first.path.toString());
-      print(imageTemp);
       setState(() {
         this._image = imageTemp;
         this.namefile = image.files.first.name.toString();
       });
-      print(image);
+
       imageBytes = await imageTemp.readAsBytes();
       String base64Image = base64Encode(imageBytes!);
       print(base64Image);
@@ -55,15 +56,24 @@ class _ClasifyScreenTwoState extends State<ClasifyScreenTwo> {
 
   var url = "http://10.0.2.2:3000/predict-meal";
   Future<String> postRequest() async {
-    HttpClient httpClient = new HttpClient();
-    HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
-    request.headers.set('content-type', 'application/json');
-    request.add(utf8.encode(json.encode(dataJson)));
-    HttpClientResponse response = await request.close();
-    // todo - you should check the response.statusCode
-    String reply = await response.transform(utf8.decoder).join();
-    httpClient.close();
-    return reply;
+    try {
+      HttpClient httpClient = new HttpClient();
+      HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
+      request.headers.set('content-type', 'application/json');
+      request.add(utf8.encode(json.encode(dataJson)));
+      HttpClientResponse response = await request.close();
+      httpClient.connectionTimeout = const Duration(seconds: 5);
+      // todo - you should check the response.statusCode
+      String reply = await response.transform(utf8.decoder).join();
+      httpClient.close();
+      return reply;
+    } on TimeoutException catch (e) {
+      print(e.toString());
+      return ("error");
+    } on SocketException catch (e) {
+      print(e.toString());
+      return ("error");
+    }
   }
 
   var resultPost;
@@ -213,12 +223,19 @@ class _ClasifyScreenTwoState extends State<ClasifyScreenTwo> {
               child: new GestureDetector(
                 onTap: () async {
                   resultPost = await postRequest();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            SecondsScreenWithData(_image!, resultPost!)),
-                  );
+                  resultPost == "error"
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ClasifyError(_image!, resultPost!)),
+                        )
+                      : Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  SecondsScreenWithData(_image!, resultPost!)),
+                        );
                 },
                 child: new Container(
                   margin: EdgeInsets.fromLTRB(0, 40, 0, 0),

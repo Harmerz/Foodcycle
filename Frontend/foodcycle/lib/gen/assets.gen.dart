@@ -12,6 +12,18 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/Home.png
+  AssetGenImage get home => const AssetGenImage('assets/images/Home.png');
+
+  /// File path: assets/images/Home1.png
+  AssetGenImage get home1 => const AssetGenImage('assets/images/Home1.png');
+
+  /// File path: assets/images/Home2.png
+  AssetGenImage get home2 => const AssetGenImage('assets/images/Home2.png');
+
+  /// File path: assets/images/Home3.png
+  AssetGenImage get home3 => const AssetGenImage('assets/images/Home3.png');
+
   /// File path: assets/images/Profile.png
   AssetGenImage get profile => const AssetGenImage('assets/images/Profile.png');
 
@@ -33,6 +45,14 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/animal.png
   AssetGenImage get animal => const AssetGenImage('assets/images/animal.png');
+
+  /// File path: assets/images/clasifyAnimal.png
+  AssetGenImage get clasifyAnimal =>
+      const AssetGenImage('assets/images/clasifyAnimal.png');
+
+  /// File path: assets/images/clasifyCompost.png
+  AssetGenImage get clasifyCompost =>
+      const AssetGenImage('assets/images/clasifyCompost.png');
 
   /// File path: assets/images/clasifymenu1.png
   AssetGenImage get clasifymenu1 =>

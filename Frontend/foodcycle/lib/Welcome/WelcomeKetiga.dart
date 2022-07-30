@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodcycle/Welcome/WelcomeKetiga.dart';
 import 'package:foodcycle/Welcome/WelcomeKetiga.dart';
+import 'package:foodcycle/Welcome/WelcomeTerakhir.dart';
 import 'package:foodcycle/gen/assets.gen.dart';
 import 'package:foodcycle/gen/colors.gen.dart';
 import 'package:foodcycle/gen/fonts.gen.dart';
@@ -99,11 +100,11 @@ class _WelcomeKetigaState extends State<WelcomeKetiga> {
                 Expanded(child: Container()),
                 new GestureDetector(
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => const ()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const WelcomeTerakhir()),
+                    );
                   },
                   child: Container(
                     width: 150,
